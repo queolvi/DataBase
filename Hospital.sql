@@ -1,3 +1,15 @@
+-- Удаление таблиц, если они существуют (для повторного выполнения скрипта)
+DROP TABLE IF EXISTS Patients;
+DROP TABLE IF EXISTS Specialties;
+DROP TABLE IF EXISTS Categories;
+DROP TABLE IF EXISTS Diagnoses;
+DROP TABLE IF EXISTS Doctors;
+DROP TABLE IF EXISTS MedicalCards;
+DROP TABLE IF EXISTS Appointments;
+DROP TABLE IF EXISTS DoctorDiagnoses;
+DROP TABLE IF EXISTS MedicalCardDiagnoses;
+
+-- Создание таблиц
 CREATE TABLE Patients(
 patient_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 patient_fio VARCHAR(255) NOT NULL,
@@ -69,3 +81,44 @@ PRIMARY KEY (med_card_id, diagnosis_code),
 FOREIGN KEY (med_card_id) REFERENCES MedicalCards(med_card_id),
 FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code)
 );
+
+-- Триггер для расчета стоимости визита
+DELIMITER //
+
+CREATE TRIGGER calculate_visit_cost
+BEFORE INSERT ON Appointments
+FOR EACH ROW
+BEGIN
+    SET NEW.visit_cost = (SELECT price_per_visit FROM Categories WHERE category_number = NEW.doctor_category);
+END //
+
+DELIMITER ;
+
+-- Вставка данных
+INSERT INTO Patients (patient_fio, patient_birthday, patient_gender, service_discount, patient_address) VALUES
+('Иванов Иван Иванович', '1980-05-15', 'M', 0.00, 'ул. Ленина, 10'),
+('Петрова Анна Сергеевна', '1992-11-20', 'F', 0.10, 'пр. Мира, 5'),
+('Сидоров Петр Алексеев', '1975-03-08', 'M', 0.00, 'ул. Кирова, 25');
+
+INSERT INTO Specialties (specialty) VALUES
+('Терапия'),
+('Хирургия'),
+('Кардиология');
+
+INSERT INTO Categories (category_name, price_per_visit) VALUES
+('Высшая', 2000.00),
+('Первая', 1500.00),
+('Вторая', 1000.00);
+
+INSERT INTO Diagnoses (diagnosis_name) VALUES
+('ОРВИ'),
+('Гипертония'),
+('Аппендицит');
+
+INSERT INTO Doctors (doctor_fio, specialty_id, category_number) VALUES
+('Кузнецов Сергей', 1, 1),
+('Смирнова Ольга', 2, 2),
+('Алексеев Дмитрий', 3, 1);
+
+INSERT INTO MedicalCards (patient_id) VALUES
+(1), (2), (3);
