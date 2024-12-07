@@ -17,7 +17,7 @@ patient_fio VARCHAR(255) NOT NULL,
 patient_birthday DATE NOT NULL,
 patient_gender ENUM('M', 'F') NOT NULL,
 service_discount DECIMAL(5,2),
-patient_address VARCHAR(255) //NOT NULL maybe?
+patient_address VARCHAR(255) /* NOT NULL maybe?*/
 );
 
 CREATE TABLE IF NOT EXISTS Specialties(
