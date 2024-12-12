@@ -50,30 +50,6 @@ opening_date DATE NOT NULL,
 diagnosis_code INT UNSIGNED NOT NULL
 );
 
-INSERT IGNORE INTO MedicalCards (med_card_id, patient_id, appointment_date, opening_date, diagnosis_code) VALUES
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,);
-
-
-
 
 CREATE TABLE IF NOT EXISTS Appointments(
 appointment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
