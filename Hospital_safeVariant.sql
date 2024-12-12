@@ -1,6 +1,5 @@
 -- удаление таблиц, если они существуют
-DROP TABLE IF EXISTS MedicalCardDiagnoses;
-DROP TABLE IF EXISTS DoctorDiagnoses;
+DROP TABLE IF EXISTS MedicalRecordEntries;
 DROP TABLE IF EXISTS Appointments;
 DROP TABLE IF EXISTS MedicalCards;
 DROP TABLE IF EXISTS Doctors;
@@ -45,7 +44,10 @@ category_number INT UNSIGNED NOT NULL
 
 CREATE TABLE IF NOT EXISTS MedicalCards(
 med_card_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-patient_id INT UNSIGNED UNIQUE NOT NULL
+patient_id INT UNSIGNED UNIQUE NOT NULL,
+appointment_date DATE NOT NULL,
+opening_date DATE NOT NULL,
+diagnosis_code INT UNSIGNED NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Appointments(
@@ -53,36 +55,44 @@ appointment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 doctor_id INT UNSIGNED NOT NULL,
 patient_id INT UNSIGNED NOT NULL,
 purpose VARCHAR(255) NOT NULL,
-purpose_date DATE NOT NULL,
+appointment_date DATE NOT NULL,
 coupon_number INT UNSIGNED NOT NULL,
 visit_cost DECIMAL(10,2) NOT NULL,
 doctor_category INT UNSIGNED NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS DoctorDiagnoses(
-doctor_id INT UNSIGNED NOT NULL,
+
+CREATE TABLE IF NOT EXISTS MedicalRecordEntries(
+record_number INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+med_card_id INT UNSIGNED NOT NULL,
+patient_id INT UNSIGNED NOT NULL,
 diagnosis_code INT UNSIGNED NOT NULL,
-PRIMARY KEY (doctor_id, diagnosis_code)
+doctor_fio VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS MedicalCardDiagnoses(
-med_card_id INT UNSIGNED NOT NULL,
-diagnosis_code INT UNSIGNED NOT NULL,
-PRIMARY KEY (med_card_id, diagnosis_code)
-);
+
 
 
 -- создание внешних ключей
 ALTER TABLE Doctors ADD CONSTRAINT fk_doctors_specialties FOREIGN KEY (specialty_id) REFERENCES Specialties(specialty_id);
 ALTER TABLE Doctors ADD CONSTRAINT fk_doctors_categories FOREIGN KEY (category_number) REFERENCES Categories(category_number);
-ALTER TABLE MedicalCards ADD CONSTRAINT fk_medicalcards_patients FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
+
 ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_doctors FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id);
 ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_patients FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
 ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_categories FOREIGN KEY (doctor_category) REFERENCES Categories(category_number);
-ALTER TABLE DoctorDiagnoses ADD CONSTRAINT fk_doctordiagnoses_doctors FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id);
-ALTER TABLE DoctorDiagnoses ADD CONSTRAINT fk_doctordiagnoses_diagnoses FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
-ALTER TABLE MedicalCardDiagnoses ADD CONSTRAINT fk_medicalcarddiagnoses_medicalcards FOREIGN KEY (med_card_id) REFERENCES MedicalCards(med_card_id);
-ALTER TABLE MedicalCardDiagnoses ADD CONSTRAINT fk_medicalcarddiagnoses_diagnoses FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
+
+ALTER TABLE MedicalCards ADD CONSTRAINT fk_patient_id FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
+ALTER TABLE MedicalCards ADD CONSTRAINT fk_appointment_date FOREIGN KEY (appointment_date) REFERENCES Appointment(appointment_date);
+ALTER TABLE MedicalCards ADD CONSTRAINT fk_diagnosis_code FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
+
+ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_id FOREIGN KEY (med_card_id) REFERENCES MedicalCards(med_card_id);
+ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_entries_patient_id FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
+ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_entries_diagnosis_code FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
+-- ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_doctor_fio FOREIGN KEY (doctor_fio) REFERENCES Doctors(doctor_fio);
+
+
+
+
 
 
 -- триггер
@@ -148,7 +158,7 @@ INSERT IGNORE INTO Doctors (doctor_fio, specialty_id, category_number) VALUES
 
 INSERT IGNORE INTO MedicalCards (patient_id) SELECT patient_id FROM Patients;
 
-INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, purpose_date, coupon_number, doctor_category) VALUES 
+INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, appointment_date, coupon_number, doctor_category) VALUES 
 (1,1,'Консультация','2024-03-08',1,1), 
 (2,2,'Обследование','2024-03-10',2,2), 
 (3,3,'Лечение','2024-03-15',3,1), 
@@ -170,42 +180,6 @@ INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, purpose_date, c
 (4,4,'Консультация','2024-04-17',19,2), 
 (5,5,'Обследование','2024-04-19',20,3); 
 
-INSERT IGNORE INTO MedicalCardDiagnoses (med_card_id, diagnosis_code) VALUES 
-(1,1),
-(1,2),
-(2,3),
-(2,4),
-(3,5),
-(3,6),
-(4,7),
-(4,8),
-(5,9),
-(5,10),
-(6,1),
-(7,2),
-(8,3),
-(9,4),
-(10,5),
-(11,6),
-(12,7),
-(13,8),
-(14,9),
-(15,10);
-
-INSERT IGNORE INTO DoctorDiagnoses (doctor_id, diagnosis_code) VALUES
-(1,1),
-(1,2),
-(2,3),
-(2,4),
-(3,5),
-(3,6),
-(4,7),
-(4,8),
-(5,9),
-(5,10),
-(6,1),
-(7,2),
-(8,3);
 
 
 SHOW TABLES; -- вывод всех таблиц
@@ -219,5 +193,4 @@ SELECT * FROM Diagnoses;
 SELECT * FROM Doctors;
 SELECT * FROM MedicalCards;
 SELECT * FROM Appointments;
-SELECT * FROM DoctorDiagnoses;
-SELECT * FROM MedicalCardDiagnoses;
+SELECT * FROM MedicalRecordEntries;
