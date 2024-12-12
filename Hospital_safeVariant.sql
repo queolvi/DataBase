@@ -50,6 +50,31 @@ opening_date DATE NOT NULL,
 diagnosis_code INT UNSIGNED NOT NULL
 );
 
+INSERT IGNORE INTO MedicalCards (med_card_id, patient_id, appointment_date, opening_date, diagnosis_code) VALUES
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,);
+
+
+
+
 CREATE TABLE IF NOT EXISTS Appointments(
 appointment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 doctor_id INT UNSIGNED NOT NULL,
@@ -71,8 +96,6 @@ doctor_fio VARCHAR(255) NOT NULL
 );
 
 
-
-
 -- создание внешних ключей
 ALTER TABLE Doctors ADD CONSTRAINT fk_doctors_specialties FOREIGN KEY (specialty_id) REFERENCES Specialties(specialty_id);
 ALTER TABLE Doctors ADD CONSTRAINT fk_doctors_categories FOREIGN KEY (category_number) REFERENCES Categories(category_number);
@@ -82,7 +105,7 @@ ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_patients FOREIGN KEY (pa
 ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_categories FOREIGN KEY (doctor_category) REFERENCES Categories(category_number);
 
 ALTER TABLE MedicalCards ADD CONSTRAINT fk_patient_id FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
-ALTER TABLE MedicalCards ADD CONSTRAINT fk_appointment_date FOREIGN KEY (appointment_date) REFERENCES Appointment(appointment_date);
+-- ALTER TABLE MedicalCards ADD CONSTRAINT fk_appointment_date FOREIGN KEY (appointment_date) REFERENCES Appointments(appointment_date);
 ALTER TABLE MedicalCards ADD CONSTRAINT fk_diagnosis_code FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
 
 ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_id FOREIGN KEY (med_card_id) REFERENCES MedicalCards(med_card_id);
@@ -156,7 +179,28 @@ INSERT IGNORE INTO Doctors (doctor_fio, specialty_id, category_number) VALUES
 ('Тарков Николай Георгиевич', 2, 2), 
 ('Гонцев Андрей Михайлович', 3, 1);
 
-INSERT IGNORE INTO MedicalCards (patient_id) SELECT patient_id FROM Patients;
+INSERT IGNORE INTO MedicalCards (med_card_id, patient_id, appointment_date, opening_date, diagnosis_code) VALUES
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,),
+(, , , ,);
+
 
 INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, appointment_date, coupon_number, doctor_category) VALUES 
 (1,1,'Консультация','2024-03-08',1,1), 
@@ -180,6 +224,27 @@ INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, appointment_dat
 (4,4,'Консультация','2024-04-17',19,2), 
 (5,5,'Обследование','2024-04-19',20,3); 
 
+INSERT IGNORE INTO MedicalRecordEntries(record_number, med_card_id, patient_id, diagnosis_code, doctor_fio) VALUES
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , ''),
+(, , , , '');
 
 
 SHOW TABLES; -- вывод всех таблиц
