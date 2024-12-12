@@ -42,14 +42,6 @@ specialty_id INT UNSIGNED NOT NULL,
 category_number INT UNSIGNED NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS MedicalCards(
-med_card_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-patient_id INT UNSIGNED UNIQUE NOT NULL,
-appointment_date DATE NOT NULL,
-opening_date DATE NOT NULL,
-diagnosis_code INT UNSIGNED NOT NULL
-);
-
 
 CREATE TABLE IF NOT EXISTS Appointments(
 appointment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -60,6 +52,15 @@ appointment_date DATE NOT NULL,
 coupon_number INT UNSIGNED NOT NULL,
 visit_cost DECIMAL(10,2) NOT NULL,
 doctor_category INT UNSIGNED NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS MedicalCards(
+med_card_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+patient_id INT UNSIGNED UNIQUE NOT NULL,
+appointment_date DATE NOT NULL,
+opening_date DATE NOT NULL,
+diagnosis_code INT UNSIGNED NOT NULL,
+appointment_id INT UNSIGNED NOT NULL
 );
 
 
@@ -155,29 +156,6 @@ INSERT IGNORE INTO Doctors (doctor_fio, specialty_id, category_number) VALUES
 ('Тарков Николай Георгиевич', 2, 2), 
 ('Гонцев Андрей Михайлович', 3, 1);
 
-INSERT IGNORE INTO MedicalCards (med_card_id, patient_id, appointment_date, opening_date, diagnosis_code) VALUES
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,),
-(, , , ,);
-
-
 INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, appointment_date, coupon_number, doctor_category) VALUES 
 (1,1,'Консультация','2024-03-08',1,1), 
 (2,2,'Обследование','2024-03-10',2,2), 
@@ -200,28 +178,50 @@ INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, appointment_dat
 (4,4,'Консультация','2024-04-17',19,2), 
 (5,5,'Обследование','2024-04-19',20,3); 
 
-INSERT IGNORE INTO MedicalRecordEntries(record_number, med_card_id, patient_id, diagnosis_code, doctor_fio) VALUES
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , ''),
-(, , , , '');
+INSERT IGNORE INTO MedicalCards (patient_id, appointment_date, opening_date, diagnosis_code, appointment_id) VALUES
+(1, '2024-03-08', '2024-01-15', 1, 1),
+(2, '2024-03-10', '2024-02-10', 2, 2),
+(3, '2024-03-15', '2024-03-10', 3, 3),
+(4, '2024-03-17', '2024-02-15', 4, 4),
+(5, '2024-03-19', '2024-03-20', 5, 5),
+(6, '2024-03-21', '2024-04-10', 6, 6),
+(7, '2024-03-23', '2024-02-25', 7, 7),
+(8, '2024-03-25', '2024-04-15', 8, 8),
+(9, '2024-03-27', '2024-03-20', 9, 9),
+(10, '2024-03-29', '2024-02-05', 10, 10),
+(11, '2024-04-01', '2024-01-15', 1, 11),
+(12, '2024-04-03', '2024-03-03', 2, 12),
+(13, '2024-04-05', '2024-04-11', 3, 13),
+(14, '2024-04-07', '2024-02-10', 4, 14),
+(15, '2024-04-09', '2024-01-25', 5, 15),
+(1, '2024-04-10', '2024-01-20', 6, 16),
+(2, '2024-04-12', '2024-03-25', 7, 17),
+(3, '2024-04-15', '2024-03-01', 8, 18),
+(4, '2024-04-17', '2024-03-20', 9, 19),
+(5, '2024-04-19', '2024-04-15', 10, 20);
 
+
+INSERT IGNORE INTO MedicalRecordEntries (med_card_id, patient_id, diagnosis_code, doctor_fio) VALUES
+(1, 1, 1, 'Кузнецов Сергей Витальевич'),
+(2, 2, 2, 'Смирнова Ольга Озоновна'),
+(3, 3, 3, 'Алексеев Дмитрий Святославович'),
+(4, 4, 4, 'Синицин Максим Анатольевич'),
+(5, 5, 5, 'Крюков Олег Дмитриевич'),
+(6, 6, 6, 'Юсин Анатолий Григориевич'),
+(7, 7, 7, 'Тарков Николай Георгиевич'),
+(8, 8, 8, 'Гонцев Андрей Михайлович'),
+(9, 9, 9, 'Кузнецов Сергей Витальевич'),
+(10, 10, 10, 'Смирнова Ольга Озоновна'),
+(11, 11, 1, 'Кузнецов Сергей Витальевич'),
+(12, 12, 2, 'Смирнова Ольга Озоновна'),
+(13, 13, 3, 'Алексеев Дмитрий Святославович'),
+(14, 14, 4, 'Синицин Максим Анатольевич'),
+(15, 15, 5, 'Крюков Олег Дмитриевич'),
+(16, 1, 6, 'Юсин Анатолий Григориевич'),
+(17, 2, 7, 'Тарков Николай Георгиевич'),
+(18, 3, 8, 'Гонцев Андрей Михайлович'),
+(19, 4, 9, 'Кузнецов Сергей Витальевич'),
+(20, 5, 10, 'Смирнова Ольга Озоновна');
 
 SHOW TABLES; -- вывод всех таблиц
 
