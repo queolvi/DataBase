@@ -1,4 +1,5 @@
 -- удаление таблиц, если они существуют
+DROP TABLE IF EXISTS MedicalRecordEntries;
 DROP TABLE IF EXISTS Appointments;
 DROP TABLE IF EXISTS MedicalCards;
 DROP TABLE IF EXISTS Doctors;
@@ -10,7 +11,7 @@ DROP TABLE IF EXISTS Patients;
 
 -- создание таблиц
 CREATE TABLE IF NOT EXISTS Patients(
-patient_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+patient_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,    
 patient_fio VARCHAR(255) NOT NULL,
 patient_birthday DATE NOT NULL,
 patient_gender ENUM('M', 'F') NOT NULL,
@@ -38,41 +39,59 @@ CREATE TABLE IF NOT EXISTS Doctors(
 doctor_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 doctor_fio VARCHAR(255) NOT NULL,
 specialty_id INT UNSIGNED NOT NULL,
-category_number INT UNSIGNED NOT NULL,
-diagnosis_code INT UNSIGNED
+category_number INT UNSIGNED NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS MedicalCards(
-med_card_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-patient_id INT UNSIGNED UNIQUE NOT NULL,
-diagnosis_code INT UNSIGNED
-);
 
 CREATE TABLE IF NOT EXISTS Appointments(
 appointment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 doctor_id INT UNSIGNED NOT NULL,
 patient_id INT UNSIGNED NOT NULL,
 purpose VARCHAR(255) NOT NULL,
-purpose_date DATE NOT NULL,
+appointment_date DATE NOT NULL,
 coupon_number INT UNSIGNED NOT NULL,
 visit_cost DECIMAL(10,2) NOT NULL,
 doctor_category INT UNSIGNED NOT NULL
 );
 
--- создание внешних ключей (ПОСЛЕ создания всех таблиц!)
+CREATE TABLE IF NOT EXISTS MedicalCards(
+med_card_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+patient_id INT UNSIGNED UNIQUE NOT NULL,
+appointment_date DATE NOT NULL,
+opening_date DATE NOT NULL,
+diagnosis_code INT UNSIGNED NOT NULL,
+appointment_id INT UNSIGNED NOT NULL
+);
 
 
+CREATE TABLE IF NOT EXISTS MedicalRecordEntries(
+record_number INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+med_card_id INT UNSIGNED NOT NULL,
+patient_id INT UNSIGNED NOT NULL,
+diagnosis_code INT UNSIGNED NOT NULL,
+doctor_fio VARCHAR(255) NOT NULL
+);
+
+
+-- создание внешних ключей
 ALTER TABLE Doctors ADD CONSTRAINT fk_doctors_specialties FOREIGN KEY (specialty_id) REFERENCES Specialties(specialty_id);
 ALTER TABLE Doctors ADD CONSTRAINT fk_doctors_categories FOREIGN KEY (category_number) REFERENCES Categories(category_number);
-ALTER TABLE Doctors ADD CONSTRAINT fk_doctors_diagnoses FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
+
 ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_doctors FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id);
 ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_patients FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
 ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_categories FOREIGN KEY (doctor_category) REFERENCES Categories(category_number);
-ALTER TABLE MedicalCards ADD CONSTRAINT fk_medicalcards_patients FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
-ALTER TABLE MedicalCards ADD CONSTRAINT fk_medicalcards_diagnoses FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
-ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_doctors FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id);
-ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_patients FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
-ALTER TABLE Appointments ADD CONSTRAINT fk_appointments_categories FOREIGN KEY (doctor_category) REFERENCES Categories(category_number);
+
+ALTER TABLE MedicalCards ADD CONSTRAINT fk_patient_id FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
+-- ALTER TABLE MedicalCards ADD CONSTRAINT fk_appointment_date FOREIGN KEY (appointment_date) REFERENCES Appointments(appointment_date);
+ALTER TABLE MedicalCards ADD CONSTRAINT fk_diagnosis_code FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
+
+ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_id FOREIGN KEY (med_card_id) REFERENCES MedicalCards(med_card_id);
+ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_entries_patient_id FOREIGN KEY (patient_id) REFERENCES Patients(patient_id);
+ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_entries_diagnosis_code FOREIGN KEY (diagnosis_code) REFERENCES Diagnoses(diagnosis_code);
+-- ALTER TABLE MedicalRecordEntries ADD CONSTRAINT fk_med_card_doctor_fio FOREIGN KEY (doctor_fio) REFERENCES Doctors(doctor_fio);
+
+
+
 
 
 
@@ -115,7 +134,7 @@ INSERT IGNORE INTO Categories (category_name, price_per_visit) VALUES
 ('Первая', 1500.00),
 ('Вторая', 1000.00);
 
-INSERT IGNORE INTO Diagnoses (diagnosis_name,diagnosis_code) VALUES -- delete d_id 
+INSERT IGNORE INTO Diagnoses (diagnosis_name) VALUES 
 ('ОРВИ'),
 ('Гипертония'),
 ('Аппендицит'), 
@@ -127,7 +146,7 @@ INSERT IGNORE INTO Diagnoses (diagnosis_name,diagnosis_code) VALUES -- delete d_
 ('Артериальная гипертония'), 
 ('Паранойя');
 
-INSERT IGNORE INTO Doctors (doctor_fio, specialty_id, category_number, diagnosis_code) VALUES -- delete d_id
+INSERT IGNORE INTO Doctors (doctor_fio, specialty_id, category_number) VALUES
 ('Кузнецов Сергей Витальевич', 1, 1), 
 ('Смирнова Ольга Озоновна', 2, 2), 
 ('Алексеев Дмитрий Святославович', 3, 1), 
@@ -137,9 +156,7 @@ INSERT IGNORE INTO Doctors (doctor_fio, specialty_id, category_number, diagnosis
 ('Тарков Николай Георгиевич', 2, 2), 
 ('Гонцев Андрей Михайлович', 3, 1);
 
-INSERT IGNORE INTO MedicalCards (patient_id) SELECT patient_id FROM Patients;
-
-INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, purpose_date, coupon_number, doctor_category) VALUES 
+INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, appointment_date, coupon_number, doctor_category) VALUES 
 (1,1,'Консультация','2024-03-08',1,1), 
 (2,2,'Обследование','2024-03-10',2,2), 
 (3,3,'Лечение','2024-03-15',3,1), 
@@ -161,6 +178,51 @@ INSERT IGNORE INTO Appointments (doctor_id, patient_id, purpose, purpose_date, c
 (4,4,'Консультация','2024-04-17',19,2), 
 (5,5,'Обследование','2024-04-19',20,3); 
 
+INSERT IGNORE INTO MedicalCards (patient_id, appointment_date, opening_date, diagnosis_code, appointment_id) VALUES
+(1, '2024-03-08', '2024-01-15', 1, 1),
+(2, '2024-03-10', '2024-02-10', 2, 2),
+(3, '2024-03-15', '2024-03-10', 3, 3),
+(4, '2024-03-17', '2024-02-15', 4, 4),
+(5, '2024-03-19', '2024-03-20', 5, 5),
+(6, '2024-03-21', '2024-04-10', 6, 6),
+(7, '2024-03-23', '2024-02-25', 7, 7),
+(8, '2024-03-25', '2024-04-15', 8, 8),
+(9, '2024-03-27', '2024-03-20', 9, 9),
+(10, '2024-03-29', '2024-02-05', 10, 10),
+(11, '2024-04-01', '2024-01-15', 1, 11),
+(12, '2024-04-03', '2024-03-03', 2, 12),
+(13, '2024-04-05', '2024-04-11', 3, 13),
+(14, '2024-04-07', '2024-02-10', 4, 14),
+(15, '2024-04-09', '2024-01-25', 5, 15),
+(1, '2024-04-10', '2024-01-20', 6, 16),
+(2, '2024-04-12', '2024-03-25', 7, 17),
+(3, '2024-04-15', '2024-03-01', 8, 18),
+(4, '2024-04-17', '2024-03-20', 9, 19),
+(5, '2024-04-19', '2024-04-15', 10, 20);
+
+
+INSERT IGNORE INTO MedicalRecordEntries (med_card_id, patient_id, diagnosis_code, doctor_fio) VALUES
+(1, 1, 1, 'Кузнецов Сергей Витальевич'),
+(2, 2, 2, 'Смирнова Ольга Озоновна'),
+(3, 3, 3, 'Алексеев Дмитрий Святославович'),
+(4, 4, 4, 'Синицин Максим Анатольевич'),
+(5, 5, 5, 'Крюков Олег Дмитриевич'),
+(6, 6, 6, 'Юсин Анатолий Григориевич'),
+(7, 7, 7, 'Тарков Николай Георгиевич'),
+(8, 8, 8, 'Гонцев Андрей Михайлович'),
+(9, 9, 9, 'Кузнецов Сергей Витальевич'),
+(10, 10, 10, 'Смирнова Ольга Озоновна'),
+(11, 11, 1, 'Кузнецов Сергей Витальевич'),
+(12, 12, 2, 'Смирнова Ольга Озоновна'),
+(13, 13, 3, 'Алексеев Дмитрий Святославович'),
+(14, 14, 4, 'Синицин Максим Анатольевич'),
+(15, 15, 5, 'Крюков Олег Дмитриевич'),
+(16, 1, 6, 'Юсин Анатолий Григориевич'),
+(17, 2, 7, 'Тарков Николай Георгиевич'),
+(18, 3, 8, 'Гонцев Андрей Михайлович'),
+(19, 4, 9, 'Кузнецов Сергей Витальевич'),
+(20, 5, 10, 'Смирнова Ольга Озоновна');
+
 SHOW TABLES; -- вывод всех таблиц
 
 -- вывод всех данных из таблиц
@@ -172,3 +234,15 @@ SELECT * FROM Diagnoses;
 SELECT * FROM Doctors;
 SELECT * FROM MedicalCards;
 SELECT * FROM Appointments;
+SELECT * FROM MedicalRecordEntries;
+
+DESC Patients;
+DESC Specialties;
+DESC Categories;
+DESC Diagnoses;
+DESC Doctors;
+DESC MedicalCards;
+DESC Appointments;
+DESC MedicalRecordEntries;
+
+
