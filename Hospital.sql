@@ -245,4 +245,64 @@ DESC MedicalCards;
 DESC Appointments;
 DESC MedicalRecordEntries;
 
+--
 
+CREATE TABLE Patients(
+patient_id INT,
+patient_fio VARCHAR(255),
+patient_birthday DATE,
+patient_gender varchar(1),
+service_discount DECIMAL(5,2),
+patient_address VARCHAR(255)
+);
+
+CREATE TABLE Specialties(
+specialty_id INT,
+specialty VARCHAR(255)
+);
+
+CREATE TABLE Categories(
+category_number INT,
+category_name VARCHAR(255),
+price_per_visit DECIMAL(10,2)
+);
+
+CREATE TABLE Diagnoses(
+diagnosis_code INT,
+diagnosis_name VARCHAR(255)
+);
+
+CREATE TABLE Doctors(
+doctor_id INT,
+doctor_fio VARCHAR(255),
+specialty_id INT,
+category_number INT
+);
+
+CREATE TABLE Appointments(
+appointment_id INT,
+doctor_id INT,
+patient_id INT,
+purpose VARCHAR(255),
+appointment_date DATE,
+coupon_number INT,
+visit_cost DECIMAL(10,2),
+doctor_category INT
+);
+
+CREATE TABLE MedicalCards(
+med_card_id INT,
+patient_id INT,
+appointment_date DATE,
+opening_date DATE,
+diagnosis_code INT,
+appointment_id INT
+);
+
+CREATE TABLE MedicalRecordEntries(
+record_number INT,
+med_card_id INT,
+patient_id INT,
+diagnosis_code INT,
+doctor_fio VARCHAR(255)
+);
