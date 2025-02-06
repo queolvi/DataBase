@@ -54,7 +54,7 @@
 ), (
 	'Сырный суп с копчеными колбасками',
 	'Основное блюдо',
-	CONVERT(VARBINARY(MAX), '\\FYR-Server\COMMON\31ИПо8381\DataBases\Zharkov_v12\database\img\big_359494.jpg'),
+	CONVERT(VARBINARY(MAX), '\\FYR-Server\COMMON\31ИПо8381\DataBases\Zharkov_v12\database\img\big_128813.jpg'),
 	30, 
 	'Подготовить ингредиенты для сырного супа с колбасками.
 
