@@ -9,38 +9,7 @@ VALUES
 ,(5, 'Ремонтов', '2000-06-06', 'M', 200.15 , 'Ярославль Ул. Свободы')
 
 
-INSERT INTO Specialties(specialty_id, specialty) 
-VALUES
-(0, 'Хирург')
-,(1, 'Терапевт')
-,(2, 'Анестезиолог')
-,(3, 'Педиатр')
-,(4, 'Ортопед')
-,(5, 'Радиолог')
-,(6, 'Невролог')
-,(7, 'Кардиолог')
-
-INSERT INTO Categories(category_number, category_name, price_per_visit) 
-VALUES
-(0, 'Первая', 300.00),
-(1, 'Вторая', 150.00),
-(2, 'Третья', 200.00),
-(3, 'Четвёртая', 500.00),
-(4, 'Пятая', 50.00),
-(5, 'Шестая', 400.00);
-
-
-
-INSERT INTO Diagnoses(diagnosis_code, diagnosis_name) 
-VALUES
-(0, 'Грипп'),
-(1, 'ОРВИ'),
-(2, 'Пневмония'),
-(3, 'Диабет'),
-(4, 'Гипертония'),
-(5, 'Аллергия');
-
-INSERT INTO Doctors(doctor_id, doctor_fio, specialty_id, category_number) 
+INSERT INTO Doctors(doctor_id, doctor_fio, specialty, category_name, price_per_visit) 
 VALUES
 (0, 'Петров П.П.', 0, 0),
 (1, 'Сидорова С.С.', 1, 1),
@@ -49,7 +18,7 @@ VALUES
 (4, 'Морозов М.М.', 4, 4),
 (5, 'Тихонов Т.Т.', 5, 5);
 
-INSERT INTO Appointments(appointment_id, doctor_id, patient_id, purpose, appointment_date, coupon_number, visit_cost, doctor_category) 
+INSERT INTO Appointments(appointment_id, purpose, appointment_date, coupon_number, visit_cost) 
 VALUES
 (0, 0, 0, 'Консультация по гриппу', '2023-10-01', 12345, 300.00, 0),
 (1, 1, 1, 'Диагностика ОРВИ', '2023-10-02', 12346, 150.00, 1),
@@ -58,7 +27,7 @@ VALUES
 (4, 4, 4, 'Консультация по гипертонии', '2023-10-05', 12349, 200.00, 4),
 (5, 5, 5, 'Обследование аллергии', '2023-10-06', 12350, 50.00, 5);
 
-INSERT INTO MedicalCards(med_card_id, patient_id, appointment_date, opening_date, diagnosis_code, appointment_id) 
+INSERT INTO MedicalCards(med_card_id, patient_id, opening_date, appointment_id, diagnosis_code, appointment_id) 
 VALUES
 (0, 0, '2023-10-01', '2023-10-01', 0, 0),
 (1, 1, '2023-10-02', '2023-10-02', 1, 1),
