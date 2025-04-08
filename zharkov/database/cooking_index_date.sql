@@ -1,0 +1,1 @@
+CREATE INDEX cooking_index_date ON cooking(date)

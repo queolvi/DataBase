@@ -1,0 +1,1 @@
+CREATE INDEX dishes_index_name ON dishes (name)

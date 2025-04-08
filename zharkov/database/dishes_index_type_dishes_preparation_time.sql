@@ -1,0 +1,1 @@
+CREATE INDEX dishes_index_type_dishes_preparation_time ON dishes(type_dishes, preparation_time)

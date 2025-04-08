@@ -1,4 +1,4 @@
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE [name] = 'Catering')
+﻿IF NOT EXISTS (SELECT * FROM sys.databases WHERE [name] = 'Catering')
 BEGIN 
      CREATE DATABASE Catering
 END 
@@ -11,6 +11,14 @@ DROP TABLE IF EXISTS recipes;
 DROP TABLE IF EXISTS structures;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS dishes;
+DROP VIEW IF EXISTS dishesView;
+DROP VIEW IF EXISTS cookingView;
+DROP VIEW IF EXISTS recipesView;
+DROP VIEW IF EXISTS structuresView;
+DROP VIEW IF EXISTS productsView;
+DROP VIEW IF EXISTS AllDataView;
+DROP VIEW IF EXISTS priceDishesView;
+DROP VIEW IF EXISTS ExpensiveDishesView;
 
 CREATE TABLE dishes (
  id INT IDENTITY PRIMARY KEY NOT NULL,
@@ -47,3 +55,6 @@ CREATE TABLE structures(
  FOREIGN KEY (product) REFERENCES products(id) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
+-- Представление списка блюд и их времени приготовления, у которых время приготовления ниже среднего
+-- Список ингридиентов и количество блюд, в которых они используются
+-- Вывести список блюд и соответствующий блюду ингридиент, которого больше всего в нем

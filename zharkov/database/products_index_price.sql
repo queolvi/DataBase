@@ -1,0 +1,1 @@
+CREATE INDEX products_index_price ON products(price)	

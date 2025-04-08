@@ -1,0 +1,1 @@
+DELETE FROM dishes WHERE dishes.name LIKE 'Картофельные драники' -- no err
