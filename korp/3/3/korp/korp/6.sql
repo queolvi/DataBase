@@ -1,0 +1,9 @@
+USE hosp;
+DROP TABLE IF EXISTS Patients;
+DROP TABLE IF EXISTS Specialties;
+DROP TABLE IF EXISTS Categories;
+DROP TABLE IF EXISTS Diagnoses;
+DROP TABLE IF EXISTS Doctors;
+DROP TABLE IF EXISTS Appointments;
+DROP TABLE IF EXISTS MedicalCards;
+DROP TABLE IF EXISTS MedicalRecordEntries;
