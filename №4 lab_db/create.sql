@@ -31,7 +31,7 @@ appointment_id INT NOT NULL PRIMARY KEY CHECK (appointment_id >=0 AND appointmen
 purpose VARCHAR(255),
 appointment_date DATE,
 coupon_number INT NOT NULL CHECK (coupon_number >=0 AND coupon_number <= 9999999),
-visit_cost DECIMAL(10,2),
+visit_cost DECIMAL(10,2)
 );
 
 CREATE TABLE MedicalCards(
