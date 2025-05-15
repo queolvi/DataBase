@@ -81,17 +81,33 @@ select * from Appointments_View;
 select * from MedicalCards_View;
 select * from MedicalRecordEntries_View;
 
--- проверка
+-- проверка на обновление данных (менять только число, что бы увидеть разницу)
 UPDATE Doctors_View 
 SET [Цена за посещение] = [Цена за посещение] * 2 
 WHERE [Специальность] LIKE 'Терапевт';
 
-insert into Patients_View([ФИО пациента], [ДР Пациента], [Пол Пациента], [Скидка], [Адрес Пациента])
-values
-('Иван Ванечкин', '1990-02-02', 'М', 500.00, 'Москоу');
 
+-- проверка на добавление пациентов, отображение вирт. таблицы
+-- что бы увидеть разницу, можете поменять patient_id в первом условии на n (СТРОГО!) > 7 и, например, изменить фамилию
+if not exists (select 1 from Patients WHERE patient_id = 7)
+begin
+insert into Patients(patient_id, patient_fio, patient_birthday ,patient_gender, service_discount ,patient_address )
+values
+(7, 'Ванечкин Н.Н', '2020-02-02', 'M', 500.00, 'Кукурузово');
 select * from Patients_View where [Скидка] = 500.00;
- 
+print 'Все записи из Вирт. Таблицы Пациентов';
+end
+
+else
+begin
+
+print 'Все записи из Вирт. Таблицы Пациентов'
+end
+
+
+-- 
+
+select * from Patients_View;
 
 
 drop view Patients_View;
