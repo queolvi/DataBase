@@ -1,2 +1,2 @@
-use hosp;
+	use hosp;
 select * from Patients;
